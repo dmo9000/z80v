@@ -184,6 +184,7 @@ int main(int argc, char *argv[])
 
     int i = 0;
 
+
     //printf("Initializing memory (%u banks of %u bytes)\n", MAX_BANKS, BANK_SIZE);
 
     if (!test_bank_switching()) {

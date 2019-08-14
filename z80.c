@@ -2,6 +2,8 @@
 #include <assert.h>
 #include "z80opmap.h"
 
+//#define PAUSE
+
 char *regnames[19] = {
                         "NONE", "A", "B", "C", "D", "E", "F", "H", "L", "(unassigned)",   
                         "PC", "AF", "BC", "DE", "HL", "IX", "IY",
@@ -77,7 +79,6 @@ void z80_load16(Z80 *CPU, opcode *oc_ptr, uint16_t value16)
 
 int z80_dumpregs(Z80 *CPU)
 {
-#define PAUSE
   char buffer[10];
 //	printf("\nz80_dumpregs():\n   ");
 	printf("                   | ");
@@ -221,7 +222,7 @@ int z80_execute(uint16_t address)
                   assert(NULL);
 									break;
 								default:
-									printf("\n++ unhandled opcode (type=%u)\n", oc_ptr->type);
+									printf("\n++ unhandled opcode (type=%u) %s\n", oc_ptr->type, oc_ptr->description);
 									z80_dumpregs(&CPU);
 									assert(NULL);
 									break;

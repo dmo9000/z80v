@@ -13,12 +13,22 @@
 #define OPCODE_HLT				0x06
 #define	OPCODE_LOAD8			0x07
 #define	OPCODE_LOAD16			0x08
+#define OPCODE_XOR				0x09
 #define	OPCODE_IN					0x20
 #define	OPCODE_OUT				0x21
 #define OPCODE_REGCOPY8		0x22
 #define OPCODE_REGCOPY16	0x23
 
 #define FLAGS_NONE			0x0
+#define	FLAG_SF					128
+#define	FLAG_ZF					64	
+#define	FLAG_YF					32
+#define	FLAG_HF					16
+#define	FLAG_XF					8
+#define	FLAG_PF					4	
+#define	FLAG_NF					2	
+#define	FLAG_CF					1
+
 
 #define REG_NONE				0
 #define REG_A						1	
@@ -51,17 +61,25 @@ struct _opcode {
 typedef struct _opcode opcode;
 
 struct _z80 {
+						uint8_t flags;
             uint16_t pc;
 						uint8_t  a;
-						uint8_t  f;
 						uint8_t  b;
 						uint8_t  c;
 						uint8_t	 d;
 						uint8_t  e;
 						uint8_t	 h;
 						uint8_t	 l;
+						uint8_t  _a;
+						uint8_t  _b;
+						uint8_t  _c;
+						uint8_t	 _d;
+						uint8_t  _e;
+						uint8_t	 _h;
+						uint8_t	 _l;
 						uint16_t	ix;
 						uint16_t	iy;
+						
             }; 
 
 typedef struct _z80 Z80;

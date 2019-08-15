@@ -8,6 +8,31 @@ uint8_t selected_track = 0;
 uint8_t selected_sector = 0;
 uint16_t dma_addr = 0;
 
+int sysbus_dump()
+{
+	printf("\n*** SYSTEM BUS PARAMETERS ***\n\n");
+	printf("  selected_disk   = %02XH\n", selected_disk);
+	printf("  selected_track  = %02XH\n", selected_disk);
+	printf("  selected_sector = %02XH\n", selected_disk);
+	printf("  dma_addr        = %04XH\n", dma_addr);
+	printf("\n");
+	return 1;
+}
+
+int sysbus_in(uint16_t port)
+{
+
+	printf("\n                   |");
+	switch (port) {
+						default:
+							printf("+++ sysbus_in(%04XH) unhandled\n", port);
+							assert(NULL);
+							break;
+						}
+	return 0;
+
+}
+
 
 int sysbus_out(uint16_t port, uint8_t val)
 {

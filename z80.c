@@ -109,7 +109,6 @@ int z80_dumpregs(Z80 *CPU)
 
 int z80_out(Z80 *CPU, opcode *oc_ptr, uint8_t port)
 {
-
 	switch(oc_ptr->regidx1) {
 				case REG_A:
 					printf("\n\n** Z80_OUT(0x%04X, 0x%02X): ", (uint16_t) port, CPU->a); 
@@ -123,7 +122,23 @@ int z80_out(Z80 *CPU, opcode *oc_ptr, uint8_t port)
 				}
 	
 	return 0;
+}
 
+int z80_in(Z80 *CPU, opcode *oc_ptr, uint8_t port)
+{
+  switch(oc_ptr->regidx1) {
+        case REG_A:
+          CPU->a = sysbus_in(port);
+          printf("\n\n** Z80_IN (0x%04X, 0x%02X): ", (uint16_t) port, CPU->a);
+          break;
+        default:
+          printf("z80_out: bad regidx1=%u\n", oc_ptr->regidx1);
+          z80_dumpregs(CPU);
+          assert(NULL);
+          break;
+        }
+
+  return 0;
 }
 
 int z80_regcopy(Z80 *CPU, opcode *oc_ptr)
@@ -203,6 +218,14 @@ int z80_execute(uint16_t address)
 									z80_regcopy(&CPU, oc_ptr);
 									advance = oc_ptr->length;
 									break;
+                case OPCODE_IN:
+                  assert(oc_ptr->length == 2);
+                  p8_1 = mem_read8(CPU.pc+1);
+                  printf("%02X   ", p8_1);
+                  printf("| IN  00%02X,%s      |", p8_1, z80_regname(oc_ptr->regidx1));
+                  z80_in(&CPU, oc_ptr, p8_1);
+                  advance = oc_ptr->length;
+                  break;
 								case OPCODE_OUT:
 									assert(oc_ptr->length == 2);
 									p8_1 = mem_read8(CPU.pc+1);	
@@ -237,6 +260,7 @@ int z80_execute(uint16_t address)
                 case OPCODE_NONE:
                   printf("\n++ OPCODE_NONE encountered, aborting\n");
 									z80_dumpregs(&CPU);
+									sysbus_dump();
                   assert(NULL);
 									break;
 								default:

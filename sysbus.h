@@ -1,11 +1,4 @@
 #include <stdint.h>
-#include <pthread.h>
+#include "z80.h"
 
-#define ZEXTEST	char
-
-int sysbus_init();
-int sysbus_disks_init();
-int sysbus_bootloader(ZEXTEST *context);
-int sysbus_ReadFromDriveToMemory(ZEXTEST *context, int driveid, uint16_t tgt_addr, off_t src_offset, uint16_t bytes);
-int run_emulation();
-
+int sysbus_out(uint16_t port, uint8_t val);

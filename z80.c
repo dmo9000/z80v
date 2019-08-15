@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include "z80opmap.h"
+#include "sysbus.h"
 
 //#define PAUSE
 
@@ -81,7 +82,8 @@ int z80_dumpregs(Z80 *CPU)
 {
   char buffer[10];
 //	printf("\nz80_dumpregs():\n   ");
-	printf("                   | ");
+	printf(" ");
+	printf("CSC=%06u ", CPU->cycles);
 	printf("PC=%04X: ", CPU->pc);
 	printf("A=%02X ", CPU->a);
 	printf("B=%02X ", CPU->b);
@@ -110,7 +112,8 @@ int z80_out(Z80 *CPU, opcode *oc_ptr, uint8_t port)
 
 	switch(oc_ptr->regidx1) {
 				case REG_A:
-					//printf("\n** Z80_OUT(0x%04X, 0x%02X)\n\n", (uint16_t) port, CPU->a); 
+					printf("\n\n** Z80_OUT(0x%04X, 0x%02X): ", (uint16_t) port, CPU->a); 
+					sysbus_out(port, CPU->a);
 					break;
 				default:
 					printf("z80_out: bad regidx1=%u\n", oc_ptr->regidx1);
@@ -164,7 +167,6 @@ int z80_execute(uint16_t address)
 	opcode *oc_ptr = NULL;
   CPU.pc = address;
 	uint8_t advance = 0;
-	uint16_t cycles = 0;
 
 	CPU.a = 0xFF;
 	CPU.b = 0xFF;
@@ -178,6 +180,22 @@ int z80_execute(uint16_t address)
 						oc_ptr = z80_decode(&CPU);
 						advance = 0;
             switch (oc_ptr->type) {
+								case OPCODE_XOR: 
+									assert(oc_ptr->length == 1);
+									printf("     ");
+									printf("| XOR %s           |", z80_regname(oc_ptr->regidx1));
+									switch (oc_ptr->regidx1) {
+															case REG_A:
+																CPU.a = CPU.a ^ CPU.a;
+																/* TODO: flags */
+																break; 
+															default:
+																printf("+++ unsupported XOR register (%s)\n",  z80_regname(oc_ptr->regidx1));
+																assert(NULL);
+																break;
+															}
+									advance = oc_ptr->length;
+									break;
 								case OPCODE_REGCOPY8:
 									assert(oc_ptr->length == 1);
 									printf("     ");
@@ -228,7 +246,8 @@ int z80_execute(uint16_t address)
 									break;
                 }
             CPU.pc += advance;
-						cycles += oc_ptr->cycles;
+						CPU.insns++;
+						CPU.cycles += oc_ptr->cycles;
 						z80_dumpregs(&CPU);
             }
 

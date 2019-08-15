@@ -1,3 +1,6 @@
+#ifndef __Z80_H__
+#define __Z80_H__
+
 #include <stdint.h>
 
 #define INSN_00_NOP   0x00
@@ -61,6 +64,8 @@ struct _opcode {
 typedef struct _opcode opcode;
 
 struct _z80 {
+						uint64_t insns;
+						uint64_t cycles;
 						uint8_t flags;
             uint16_t pc;
 						uint8_t  a;
@@ -79,7 +84,6 @@ struct _z80 {
 						uint8_t	 _l;
 						uint16_t	ix;
 						uint16_t	iy;
-						
             }; 
 
 typedef struct _z80 Z80;
@@ -92,3 +96,5 @@ void mem_write16(uint16_t addr, uint16_t val);
 opcode *z80_decode();
 int z80_execute(uint16_t address);
 char *z80_regname(uint8_t regidx);
+
+#endif /* __Z80_H__ */

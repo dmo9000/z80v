@@ -37,6 +37,7 @@ for ($i = 0; $i < 254; $i++) {
 		$length = $opcode{$i}{'length'};
 		$register1 = $opcode{$i}{'register1'};
 		$register2 = $opcode{$i}{'register2'};
+		$cycles = $opcode{$i}{'cycles'};
 		print ("\t{ \"$description\", FLAGS_NONE, $opdata, $length, $cycles, ( $register1 ), ( $register2 ) },\n");
 		}
 

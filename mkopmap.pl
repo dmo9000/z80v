@@ -1,11 +1,11 @@
 #!/usr/bin/perl
 
 print ("#include \"z80.h\"\n");
-print ("opcode z80opmap[0xFF] = {\n");
+print ("opcode z80opmap[0x100] = {\n");
 
 my %opcodes;
 
-for ($i = 0; $i < 254; $i++) {
+for ($i = 0; $i < 256; $i++) {
 	$opcode{$i}{'data'} = "";
 	$opcode{$i}{'description'} = "NULL";
 	$opcode{$i}{'opcode'} = "OPCODE_NONE";
@@ -31,7 +31,7 @@ while (<STDIN>)
 	$opcode{$insn}{'register2'} = $register2;
 }
 
-for ($i = 0; $i < 254; $i++) {
+for ($i = 0; $i < 256; $i++) {
 		$opdata = $opcode{$i}{'opcode'};
 		$description = $opcode{$i}{'description'};
 		$length = $opcode{$i}{'length'};

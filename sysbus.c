@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <assert.h>
+#include "sysbus.h"
 
 /* z80emu compatible BIOS */
 
@@ -12,18 +13,24 @@ int sysbus_dump()
 {
 	printf("\n*** SYSTEM BUS PARAMETERS ***\n\n");
 	printf("  selected_disk   = %02XH\n", selected_disk);
-	printf("  selected_track  = %02XH\n", selected_disk);
-	printf("  selected_sector = %02XH\n", selected_disk);
+	printf("  selected_track  = %02XH\n", selected_track);
+	printf("  selected_sector = %02XH\n", selected_sector);
 	printf("  dma_addr        = %04XH\n", dma_addr);
 	printf("\n");
 	return 1;
 }
 
-int sysbus_in(uint16_t port)
+int sysbus_in(Z80 *CPU, uint16_t port)
 {
 
 	printf("\n                   |");
 	switch (port) {
+						case 0x0E:
+							/* acknowledge drive controller */
+							CPU->a = 0;	
+							printf(" DRVACK %03u (%02XH)|", CPU->a, CPU->a);
+							return 1;
+							break;	
 						default:
 							printf("+++ sysbus_in(%04XH) unhandled\n", port);
 							assert(NULL);
@@ -34,7 +41,7 @@ int sysbus_in(uint16_t port)
 }
 
 
-int sysbus_out(uint16_t port, uint8_t val)
+int sysbus_out(Z80 *CPU, uint16_t port, uint8_t val)
 {
 
 	printf("\n                   |");

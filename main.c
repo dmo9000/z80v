@@ -19,8 +19,8 @@
    http://clrhome.org/table/ 
    http://z80-heaven.wikidot.com/opcode-reference-chart */
 
-char memory_bank[MAX_BANKS][BANK_SIZE];
-char memory[MAIN_MEMORY];
+uint8_t memory_bank[MAX_BANKS][BANK_SIZE];
+//uint8_t memory[MAIN_MEMORY];
 int memory_bank_map [MAX_BANKS];
 
 uint8_t mem_read8(uint16_t addr)
@@ -53,6 +53,14 @@ uint16_t mem_read16(uint16_t addr)
 
     phys1_sel = memory_bank_map[bank1_sel];
     phys2_sel = memory_bank_map[bank2_sel];
+
+/*
+		printf("\n");
+		printf("addr = %04XH\n", addr);
+		printf("bank1_sel/off = %02X/%02X, bank2_off = %02X/%02X\n", bank1_sel, bank1_off, bank2_sel, bank2_off);
+		printf("%02x==%02X\n", bank1_off, (uint8_t) memory_bank[phys1_sel][bank1_off]);
+		printf("%02x==%02X\n", bank2_off, (uint8_t) memory_bank[phys2_sel][bank2_off]);
+*/
 
     return memory_bank[phys1_sel][bank1_off] | ( memory_bank[phys2_sel][bank2_off] << 8);
 }

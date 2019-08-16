@@ -236,16 +236,16 @@ uint16_t z80_get_reg16(uint8_t reg)
     switch (reg) {
     case REG_BC:
         return CPU.c | (CPU.b << 8);
-				break;
+        break;
     case REG_HL:
         return CPU.l | (CPU.h << 8);
-				break;
+        break;
     case REG_SP:
         return CPU.sp;
-				break;
+        break;
     default:
         printf("z80_get_reg16: unsupported 16 bit register (%s)\n",  z80_regname(reg));
-				assert(NULL);
+        assert(NULL);
         break;
     }
 }
@@ -255,9 +255,9 @@ uint16_t z80_set_reg16(uint8_t reg, uint16_t val)
 
     switch (reg) {
     case REG_BC:
-				CPU.b = (uint8_t) (val & 0xFF00) >> 8;
-				CPU.c = (uint8_t) (val & 0x00FF);
-				break;
+        CPU.b = (uint8_t) (val & 0xFF00) >> 8;
+        CPU.c = (uint8_t) (val & 0x00FF);
+        break;
     default:
         printf("z80_set_reg16: unsupported 16 bit register (%s)\n",  z80_regname(reg));
         assert(NULL);
@@ -295,33 +295,33 @@ int z80_execute(uint16_t address)
     CPU._flags = 0xFF; 	/* set all flags on initially */
     /* program counter starts at zero */
     CPU.pc = 0x0000;
-		CPU.insns = 0;
-		CPU.cycles = 0;
+    CPU.insns = 0;
+    CPU.cycles = 0;
 
     while (1) {
         oc_ptr = z80_decode(&CPU);
         advance = 0;
         switch (oc_ptr->type) {
-				case OPCODE_CP:
+        case OPCODE_CP:
             p8_1 = mem_read8(CPU.pc+1);
             printf("     ");
             printf("| CP %02XH          |", p8_1);
             p8_1 = CPU.a - p8_1;
-						/* MODIFY FLAGS!! */
-						if (p8_1 == 0) {
-							z80_setflag(FLAG_ZF, true);	
-							} else {
-							z80_setflag(FLAG_ZF, false);	
-							}
+            /* MODIFY FLAGS!! */
+            if (p8_1 == 0) {
+                z80_setflag(FLAG_ZF, true);
+            } else {
+                z80_setflag(FLAG_ZF, false);
+            }
             advance = oc_ptr->length;
-					break;
+            break;
         case OPCODE_ADD16:
             printf("     ");
             printf("| ADD %s,%s       |", z80_regname(oc_ptr->regidx1), z80_regname(oc_ptr->regidx2));
             switch (oc_ptr->regidx1) {
             case REG_HL:
                 z80_add16(oc_ptr->regidx1, z80_get_reg16(oc_ptr->regidx2));
-            		advance = oc_ptr->length;
+                advance = oc_ptr->length;
                 /* TODO: flags */
                 break;
             default:
@@ -354,7 +354,7 @@ int z80_execute(uint16_t address)
                 break;
             }
             advance = oc_ptr->length;
-						break;
+            break;
 
         case OPCODE_INC16:
             assert(oc_ptr->length == 1);
@@ -417,9 +417,9 @@ int z80_execute(uint16_t address)
             switch (oc_ptr->regidx1) {
             case REG_A:
                 CPU.a = CPU.a ^ CPU.a;
-								if (CPU.a == 0) {
-											z80_setflag(FLAG_ZF, true);
-											}
+                if (CPU.a == 0) {
+                    z80_setflag(FLAG_ZF, true);
+                }
                 /* TODO: flags */
                 break;
             default:
@@ -459,22 +459,22 @@ int z80_execute(uint16_t address)
             printf("| JP %04XH        |", p16_1);
             CPU.pc = p16_1;
             break;
-				case OPCODE_JPC:
+        case OPCODE_JPC:
             assert(oc_ptr->length == 3);
             p16_1 = mem_read16(CPU.pc+1);
             printf("%04X ", p16_1);
             printf("| JP_C %04XH      |", p16_1);
-						
-           	//printf("z80_getflag(FLAG_CF) = %s\n", (z80_getflag(FLAG_CF) ? "true" : "false"));
+
+            //printf("z80_getflag(FLAG_CF) = %s\n", (z80_getflag(FLAG_CF) ? "true" : "false"));
             if (z80_getflag(FLAG_CF)) {
-								//printf("Jumping to %04XH\n", p16_1);
+                //printf("Jumping to %04XH\n", p16_1);
                 CPU.pc = p16_1;
                 advance = 0;
             } else {
-								//printf("Not jumping to %04XH\n", p16_1);
+                //printf("Not jumping to %04XH\n", p16_1);
                 advance = oc_ptr->length;
             }
-						break;
+            break;
         case OPCODE_JPZ:
             assert(oc_ptr->length == 3);
             p16_1 = mem_read16(CPU.pc+1);
@@ -508,13 +508,13 @@ int z80_execute(uint16_t address)
             printf("\n++ OPCODE_NONE encountered, aborting\n");
             z80_dumpregs(&CPU);
             sysbus_dump();
-						fflush(NULL);
+            fflush(NULL);
             assert(NULL);
             break;
         default:
             printf("\n++ unhandled opcode (type=%u) %s\n", oc_ptr->type, oc_ptr->description);
             z80_dumpregs(&CPU);
-						fflush(NULL);
+            fflush(NULL);
             assert(NULL);
             break;
         }

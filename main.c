@@ -14,9 +14,9 @@
 
 /* FIXME: currently not endian-safe - this will only work correctly on a LSB CPU */
 
-/* Z80 OPCODE REFERENCE CHARTS 
+/* Z80 OPCODE REFERENCE CHARTS
 
-   http://clrhome.org/table/ 
+   http://clrhome.org/table/
    http://z80-heaven.wikidot.com/opcode-reference-chart */
 
 uint8_t memory_bank[MAX_BANKS][BANK_SIZE];
@@ -54,13 +54,13 @@ uint16_t mem_read16(uint16_t addr)
     phys1_sel = memory_bank_map[bank1_sel];
     phys2_sel = memory_bank_map[bank2_sel];
 
-/*
-		printf("\n");
-		printf("addr = %04XH\n", addr);
-		printf("bank1_sel/off = %02X/%02X, bank2_off = %02X/%02X\n", bank1_sel, bank1_off, bank2_sel, bank2_off);
-		printf("%02x==%02X\n", bank1_off, (uint8_t) memory_bank[phys1_sel][bank1_off]);
-		printf("%02x==%02X\n", bank2_off, (uint8_t) memory_bank[phys2_sel][bank2_off]);
-*/
+    /*
+    		printf("\n");
+    		printf("addr = %04XH\n", addr);
+    		printf("bank1_sel/off = %02X/%02X, bank2_off = %02X/%02X\n", bank1_sel, bank1_off, bank2_sel, bank2_off);
+    		printf("%02x==%02X\n", bank1_off, (uint8_t) memory_bank[phys1_sel][bank1_off]);
+    		printf("%02x==%02X\n", bank2_off, (uint8_t) memory_bank[phys2_sel][bank2_off]);
+    */
 
     return memory_bank[phys1_sel][bank1_off] | ( memory_bank[phys2_sel][bank2_off] << 8);
 }
@@ -173,18 +173,18 @@ bool test_bank_switching()
 int bootloader_hack()
 {
 
-	uint16_t i = 0;
-	char bootmem[256];
-	FILE *bootdisk = NULL;
+    uint16_t i = 0;
+    char bootmem[256];
+    FILE *bootdisk = NULL;
 
-	bootdisk = fopen("disks/Drive0.disk", "rb");
-	assert(bootdisk);
-	assert(fread(&bootmem, 256, 1, bootdisk));
-	for (i = 0; i < 256; i++) {
-			mem_write8(i, bootmem[i]); 
-			}
-	fclose(bootdisk);
-	return 0;
+    bootdisk = fopen("disks/Drive0.disk", "rb");
+    assert(bootdisk);
+    assert(fread(&bootmem, 256, 1, bootdisk));
+    for (i = 0; i < 256; i++) {
+        mem_write8(i, bootmem[i]);
+    }
+    fclose(bootdisk);
+    return 0;
 }
 
 int main(int argc, char *argv[])
@@ -199,7 +199,7 @@ int main(int argc, char *argv[])
         printf("SELF_TEST: bank switching test failed\n");
     }
 
-		bootloader_hack();
+    bootloader_hack();
     z80_execute(ENTRY_ADDRESS);
 
     exit(0);

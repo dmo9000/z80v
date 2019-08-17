@@ -79,6 +79,7 @@ typedef struct _opcode opcode;
 struct _z80 {
 						uint64_t insns;
 						uint64_t cycles;
+						uint16_t brkpoint;
 						uint8_t a;
 						uint8_t b;
 						uint8_t c;

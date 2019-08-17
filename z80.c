@@ -297,8 +297,11 @@ int z80_execute(uint16_t address)
     CPU.pc = 0x0000;
     CPU.insns = 0;
     CPU.cycles = 0;
+		CPU.brkpoint = 0x0; 				
+		CPU.brkpoint = 0xFA00;			/* CP/M BIOS address */ 
 
     while (1) {
+				assert(CPU.pc != CPU.brkpoint);
         oc_ptr = z80_decode(&CPU);
         advance = 0;
         switch (oc_ptr->type) {

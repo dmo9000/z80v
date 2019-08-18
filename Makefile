@@ -1,6 +1,6 @@
 all: z80v
 
-OBJS=z80.o sysbus.o main.o  
+OBJS=z80.o sysbus.o disk.o main.o  
 
 z80v: z80opmap.h $(OBJS)
 	gcc -o z80v $(OBJS)

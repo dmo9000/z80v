@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <assert.h>
 #include "z80.h"
+#include "sysbus.h"
 
 #define ENTRY_ADDRESS   0x0000
 #define BANK_SIZE       16384

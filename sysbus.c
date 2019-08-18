@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include "sysbus.h"
+#include "disk.h"
 
 /* z80emu compatible BIOS */
 
@@ -30,6 +31,8 @@ int sysbus_init()
     }
 
 	/* load the first 512 bytes of the first disk into RAM */
+
+		disk_init();
 
     bootloader_hack();
 

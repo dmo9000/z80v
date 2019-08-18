@@ -20,6 +20,24 @@ int sysbus_dump()
     return 1;
 }
 
+int sysbus_init()
+{
+
+	/* power on self-test */
+
+    if (!test_bank_switching()) {
+        printf("SELF_TEST: bank switching test failed\n");
+    }
+
+	/* load the first 512 bytes of the first disk into RAM */
+
+    bootloader_hack();
+
+		return 0;
+}
+
+
+
 int sysbus_in(Z80 *CPU, uint16_t port)
 {
 
@@ -98,4 +116,21 @@ int sysbus_out(Z80 *CPU, uint16_t port, uint8_t val)
 
     return 0;
 
+}
+
+int bootloader_hack()
+{
+
+    uint16_t i = 0;
+    char bootmem[256];
+    FILE *bootdisk = NULL;
+
+    bootdisk = fopen("disks/Drive0.disk", "rb");
+    assert(bootdisk);
+    assert(fread(&bootmem, 256, 1, bootdisk));
+    for (i = 0; i < 256; i++) {
+        mem_write8(i, bootmem[i]);
+    }
+    fclose(bootdisk);
+    return 0;
 }

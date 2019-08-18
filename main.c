@@ -70,7 +70,8 @@ void mem_write16(uint16_t addr, uint16_t val)
     if ((addr % 0x4000) == 0x3FFF) {
         /* handle 16-bit read accross bank boundary */
         assert(NULL);
-    }
+			}
+    
     /* not yet implemented */
     assert(NULL);
     return;
@@ -169,37 +170,13 @@ bool test_bank_switching()
     return true;
 }
 
-
-int bootloader_hack()
-{
-
-    uint16_t i = 0;
-    char bootmem[256];
-    FILE *bootdisk = NULL;
-
-    bootdisk = fopen("disks/Drive0.disk", "rb");
-    assert(bootdisk);
-    assert(fread(&bootmem, 256, 1, bootdisk));
-    for (i = 0; i < 256; i++) {
-        mem_write8(i, bootmem[i]);
-    }
-    fclose(bootdisk);
-    return 0;
-}
-
 int main(int argc, char *argv[])
 {
 
     int i = 0;
 
+		sysbus_init();
 
-    //printf("Initializing memory (%u banks of %u bytes)\n", MAX_BANKS, BANK_SIZE);
-
-    if (!test_bank_switching()) {
-        printf("SELF_TEST: bank switching test failed\n");
-    }
-
-    bootloader_hack();
     z80_execute(ENTRY_ADDRESS);
 
     exit(0);
